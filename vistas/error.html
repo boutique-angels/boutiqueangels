@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Mi Aplicación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+       <!--CSS-->
+       <link href="/css/style.css" rel="stylesheet">
+       <link href="/css/login/styles.css" rel="stylesheet">
+   
+    <style>
+        /* Estilos para el cuadro de error */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            padding: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+        .error-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .error-container p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        .error-icon {
+            font-size: 4rem;
+            color: #dc3545;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #c5a44f;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover {
+            background-color: #c5a44f;
+        }
+     
+
+ 
+        .whatsapp-btn {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    background-color: #25d366;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    text-decoration: none;
+}
+
+.whatsapp-btn img {
+    width: 35px;
+    height: 35px;
+}
+
+    </style>
+</head>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/session-info')
+            .then(response => response.json())
+            .then(data => {
+                if (data.nombres) {
+                    // Ocultar el botón "Iniciar Sesión" y mostrar el nombre del usuario
+                    document.getElementById('login-btn').style.display = 'none';
+                    document.getElementById('user-names').textContent = `Hola, ${data.nombres}`;
+                    // Mostrar el botón "Cerrar Sesión"
+                    document.getElementById('cerrar-sesion-link').style.display = 'inline';
+                } else {
+                    // Mostrar el botón "Iniciar Sesión" si no hay usuario autenticado
+                    document.getElementById('login-btn').style.display = 'inline';
+                    // Ocultar el botón "Cerrar Sesión"
+                    document.getElementById('cerrar-sesion-link').style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error al obtener la información de la sesión:', error));
+    });
+
+    function cerrarSesion(event) {
+        event.preventDefault(); // Evitar la acción predeterminada del enlace
+        fetch('/logout') // Ruta para cerrar sesión
+            .then(response => {
+                if (response.ok) {
+                    // Redirigir a la página principal después de cerrar sesión
+                    window.location.href = '/';
+                } else {
+                    console.error('Error al cerrar sesión');
+                }
+            })
+            .catch(error => console.error('Error al cerrar sesión:', error));
+    }
+    function validatePassword(input) {
+    const password = input.value;
+    const warning = document.getElementById('passwordWarning');
+
+    // Verifica que la contraseña tenga entre 8 y 20 caracteres y cumpla con los requisitos
+    const isValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(password);
+    
+    if (!isValid) {
+        warning.style.display = 'block';
+    } else {
+        warning.style.display = 'none';
+    }
+}
+</script>
+<body> 
+    <a href="https://wa.me/573133670007" class="whatsapp-btn" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <img src="/img/Logoo.jpg" alt="Logo" style="width: 130px; height: auto;">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav m-auto py-0">
+                    <a href="/" class="nav-item nav-link">Inicio</a>
+                    <a href="/eventos" class="nav-item nav-link">Eventos</a>
+                    <a href="/servicios" class="nav-item nav-link">Servicios</a>
+                    <a href="/cotizar" class="nav-item nav-link">Reservar</a>
+                </div>
+                <span id="user-names" class="navbar-text d-none d-lg-block"></span>
+                <a href="/login" id="login-btn" class="btn btn-primary d-none d-lg-block">Iniciar Sesión</a>
+                <a href="/loginn" id="reservas-btn" class="btn btn-primary d-none d-lg-block ml-3" style="font-size: 1rem; padding: 0.5rem 1rem;">Mis reservas</a>                
+                <a href="#" id="cerrar-sesion-link" class="btn cerrar-sesion d-none d-lg-block" onclick="cerrarSesion(event)">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </a>
+            </div>
+        </nav>
+    </div>
+<body>
+    <div class="error-container">
+        <i class="fas fa-exclamation-triangle error-icon"></i>
+        <h1>¡Algo salió mal!</h1>
+        <p id="errorMessage">Lo sentimos, ha ocurrido un error inesperado. Por favor, inténtelo de nuevo más tarde.</p>
+        <p>Si el problema persiste, contacte al soporte técnico.</p>
+        <a id="backButton" href="/login.html" class="back-button">Volver al login</a>
+    </div>
+
+    <script>
+        // Obtener los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorType = urlParams.get('error');
+
+        // Manejar el mensaje de error
+        if (errorType) {
+            const errorMessages = {
+                'existing_quote': 'Ya existe una cotización para esta fecha. Por favor, elige otra fecha.',
+                'login': 'Error al iniciar sesión. Por favor, verifique sus credenciales.',
+                'required': 'Correo y contraseña son requeridos.',
+                'invalid': 'Correo o contraseña incorrectos.',
+                'logout': 'Error al cerrar sesión. Inténtelo de nuevo.',
+                'database': 'Error en la base de datos. Por favor, inténtelo más tarde.',
+                'not_found': 'La página solicitada no fue encontrada.',
+                'server': 'Error del servidor. Por favor, inténtelo más tarde.'
+            };
+
+            // Obtener el mensaje de error correspondiente
+            const message = errorMessages[errorType] || 'Lo sentimos, ha ocurrido un error inesperado.';
+            document.getElementById('errorMessage').textContent = message;
+
+            // Cambiar el enlace de regreso según el tipo de error
+            const backButton = document.getElementById('backButton');
+            if (errorType === 'existing_quote') {
+                backButton.href = '/cotizar.html'; // Redirigir a cotizar.html
+                backButton.textContent = 'Volver al formulario cotizar'; // Cambiar el texto del botón
+            }
+        }
+    </script>
+</body>
+</html>
